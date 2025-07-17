@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using Fusion;
 using UnityEngine;
 
@@ -9,7 +7,6 @@ public class Turret : NetworkBehaviour
     [SerializeField] private Transform _shotSpawnTransform;
     
     [SerializeField] private float _timeCooldown;
-    //[Networked] private float TimePulse { get; set; }
     
     [Networked] private TickTimer _cooldownTimer { get; set; }
 
@@ -24,16 +21,6 @@ public class Turret : NetworkBehaviour
 
         TurretLogic();
         ResetTimer();
-
-        // if (TimePulse < _timeCooldown)
-        // {
-        //     TimePulse += Runner.DeltaTime;
-        // }
-        // else
-        // {
-        //     TurretLogic();
-        //     TimePulse = 0;
-        // }
     }
 
     void TurretLogic()

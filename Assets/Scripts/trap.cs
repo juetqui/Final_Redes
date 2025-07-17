@@ -4,7 +4,7 @@ using UnityEngine;
 public class Trap : NetworkBehaviour
 {
     [SerializeField] private float _duration = 2f;
-    [SerializeField] private float _lifetime = 3f; // cuánto tiempo dura si no se activa
+    [SerializeField] private float _lifetime = 3f;
 
     [Networked] private TickTimer _lifeTimer { get; set; }
 

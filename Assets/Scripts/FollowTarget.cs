@@ -4,15 +4,14 @@ public class FollowTarget : MonoBehaviour
 {
     private Transform _targetTransform;
 
-    [SerializeField] private float _height = 20f;       // Altura sobre el jugador
-    [SerializeField] private float _smoothSpeed = 10f;  // Velocidad de seguimiento
-    [SerializeField] private Vector3 _offset = Vector3.zero; // Offset si querés ajustarlo manualmente
+    [SerializeField] private float _height = 20f;
+    [SerializeField] private float _smoothSpeed = 10f;
+    [SerializeField] private Vector3 _offset = Vector3.zero;
 
     public void SetTarget(Player player)
     {
         _targetTransform = player.transform;
 
-        // Rotar cámara para que mire hacia abajo
         transform.rotation = Quaternion.Euler(90f, 0f, 0f);
     }
 

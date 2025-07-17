@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using Fusion;
 using UnityEngine;
 
@@ -24,7 +21,6 @@ public class Obstacle : NetworkBehaviour
     {
         Movement();
 
-        //Si NO termino de correr el timer
         if (!DirectionDelay.ExpiredOrNotRunning(Runner))
             return;
         

@@ -4,12 +4,10 @@ using Fusion;
 public class PlayerSpawner : SimulationBehaviour, IPlayerJoined
 {
     [SerializeField] private GameObject _playerPrefab;
-
     [SerializeField] private Transform[] _spawnTransforms;
 
     private bool _initialized;
     
-    //Se ejecuta por CADA cliente conectado
     public void PlayerJoined(PlayerRef player)
     {
         var playersCount = Runner.SessionInfo.PlayerCount;
@@ -20,7 +18,6 @@ public class PlayerSpawner : SimulationBehaviour, IPlayerJoined
             return;
         }
         
-        //Si el cliente que entro, es el mismo cliente donde corre este codigo, entonces:
         if (player == Runner.LocalPlayer)
         {
             if (playersCount < 2)
@@ -31,8 +28,6 @@ public class PlayerSpawner : SimulationBehaviour, IPlayerJoined
             {
                 CreatePlayer(playersCount - 1);
             }
-            
-            //if (playersCount - 1 >= _spawnTransforms.Length) return;
         }
     }
 
@@ -42,7 +37,6 @@ public class PlayerSpawner : SimulationBehaviour, IPlayerJoined
         spawnPointIndex = spawnPointIndex % 2 != 0 ? 0 : 1;
         var newPosition = _spawnTransforms[spawnPointIndex].position;
         var newRotation = _spawnTransforms[spawnPointIndex].rotation;
-        
         
         Runner.Spawn(_playerPrefab, newPosition, newRotation);
     }
