@@ -1,7 +1,6 @@
 using UnityEngine;
 using Fusion;
 
-[RequireComponent(typeof(Player))]
 public class PlayerView : NetworkBehaviour
 {
     private NetworkMecanimAnimator _mecanim;
@@ -10,7 +9,7 @@ public class PlayerView : NetworkBehaviour
     public override void Spawned()
     {
         _mecanim = GetComponentInChildren<NetworkMecanimAnimator>();
-        var m = GetComponent<Player>();
+        var m = GetComponentInParent<Player>();
         m.OnMovement += MoveAnimation;
 
         var lifeComponent = GetComponentInParent<LifeHandler>();
