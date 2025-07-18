@@ -11,13 +11,6 @@ public class PlayerView : NetworkBehaviour
         _mecanim = GetComponentInChildren<NetworkMecanimAnimator>();
         var m = GetComponentInParent<Player>();
         m.OnMovement += MoveAnimation;
-
-        var lifeComponent = GetComponentInParent<LifeHandler>();
-
-        if (lifeComponent)
-        {
-            lifeComponent.OnDeadChanged += EnableMeshRender;
-        }
     }
 
     void MoveAnimation(Vector2 input)

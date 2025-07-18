@@ -38,6 +38,7 @@ public class Player : NetworkBehaviour
     // --- VIDA ---
     [Networked, OnChangedRender(nameof(CurrentLifeChanged))]
     private int CurrentLife { get; set; }
+
     [SerializeField] private HealthBar _healthBarPrefab;
     [SerializeField] private Vector3 _healthBarPosition;
     private HealthBar _healthBarInstance;
@@ -46,6 +47,7 @@ public class Player : NetworkBehaviour
     private Vector2 _input;
     private Camera _mainCam;
     private NetworkRigidbody3D _rb;
+    private bool _inputsEnabled = true;
 
     // --- EVENTOS ---
     public event Action<Vector2> OnMovement = delegate { };
@@ -59,6 +61,8 @@ public class Player : NetworkBehaviour
 
         CurrentLife = _maxLife;
 
+        _healthBarInstance = LifeBarHandler.Instance.AddLifeBar(this);
+
         if (HasStateAuthority)
         {
             if (_mainCam != null)
@@ -67,24 +71,6 @@ public class Player : NetworkBehaviour
             var smr = GetComponentInChildren<SkinnedMeshRenderer>();
             if (smr != null)
                 smr.material.color = Color.blue;
-
-            if (TryGetBehaviour(out LifeHandler lifeHandler))
-            {
-                lifeHandler.OnDeadChanged += b =>
-                {
-                    enabled = !b;
-                };
-
-                lifeHandler.OnRespawn += () =>
-                {
-                    // Quizás querés mover al jugador, no al lifeHandler?
-                    this.transform.position = _healthBarPosition;
-                };
-            }
-            else
-            {
-                Debug.LogWarning("LifeHandler no encontrado en Player");
-            }
         }
         else
         {
@@ -99,7 +85,7 @@ public class Player : NetworkBehaviour
 
     void Update()
     {
-        if (!HasStateAuthority) return;
+        if (!HasStateAuthority || !_inputsEnabled) return;
 
         _input = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
 
@@ -226,6 +212,8 @@ public class Player : NetworkBehaviour
 
     private void Local_TakeDamage(int dmg)
     {
+        if (dmg >= CurrentLife) dmg = CurrentLife;
+        
         CurrentLife -= dmg;
 
         if (CurrentLife <= 0)
@@ -236,17 +224,22 @@ public class Player : NetworkBehaviour
 
     private void Death()
     {
-        Debug.Log("Mori :(");
-        GameManager.Instance.RPC_Defeat(Runner.LocalPlayer);
+        Debug.LogError("Mori :(");
+        LifeBarHandler.Instance.RemoveLifeBar(_healthBarInstance);
+
+        var gameManager = GameManager.Instance;
+        
+        if (gameManager != null)
+            gameManager.RPC_Defeat(Object.StateAuthority);
+
+        _inputsEnabled = false;
         Runner.Despawn(Object);
     }
 
     void CurrentLifeChanged()
     {
-        Debug.Log(CurrentLife);
-
-        //if (_healthBarInstance != null)
-        //    _healthBarInstance.SetHealth(CurrentLife, _maxLife);
+        if (_healthBarInstance != null)
+            _healthBarInstance.UpdateLife(CurrentLife, _maxLife);
     }
 
     // --- EFECTOS EXTERNOS ---

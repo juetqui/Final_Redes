@@ -10,17 +10,19 @@ public class HealthBar : MonoBehaviour
 
     [SerializeField] private Image _myLifeImage;
 
-    public HealthBar SetOwner(LifeHandler owner)
+    public HealthBar SetOwner(Player owner)
     {
         _owner = owner.transform;
 
         return this;
     }
 
-    public void UpdateLife(float val)
+    public void UpdateLife(float val, float maxHealth)
     {
-        StopAllCoroutines();
-        StartCoroutine(UpdateLifeOnTime(val));
+        _myLifeImage.fillAmount = val / maxHealth;
+        //val = Mathf.Clamp01(val);
+        //StopAllCoroutines();
+        //StartCoroutine(UpdateLifeOnTime(val));
     }
 
     IEnumerator UpdateLifeOnTime(float val)
@@ -41,6 +43,7 @@ public class HealthBar : MonoBehaviour
 
     public void UpdatePosition()
     {
+        if (_owner == null) return;
         transform.position = _owner.position + Vector3.up * HEAD_OFFSET;
     }
 }

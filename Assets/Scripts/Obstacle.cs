@@ -44,7 +44,7 @@ public class Obstacle : NetworkBehaviour
 
         if (other.TryGetComponent(out Player player))
         {
-            player.RPC_TakeDamage(25);
+            player.RPC_TakeDamage((byte)25);
         }
     }
 }

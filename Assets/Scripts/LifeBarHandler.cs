@@ -22,21 +22,22 @@ public class LifeBarHandler : MonoBehaviour
         _lifeBarsList = new List<HealthBar>();
     }
 
-    public HealthBar AddLifeBar(LifeHandler owner)
+    public HealthBar AddLifeBar(Player owner)
     {
         var newLifeBar = Instantiate(lifeBarItemPrefab, transform)
             .SetOwner(owner);
 
         _lifeBarsList.Add(newLifeBar);
 
-        owner.OnLeft += () =>
-        {
-            _lifeBarsList.Remove(newLifeBar);
-
-            Destroy(newLifeBar.gameObject);
-        };
-
         return newLifeBar;
+    }
+    
+    public void RemoveLifeBar(HealthBar bar)
+    {
+        if (bar != null && _lifeBarsList.Remove(bar))
+        {
+            Destroy(bar.gameObject);
+        }
     }
 
     void LateUpdate()

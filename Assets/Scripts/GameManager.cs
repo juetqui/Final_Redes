@@ -11,10 +11,10 @@ public class GameManager : NetworkBehaviour
 
     private List<PlayerRef> _players;
 
-    private void Awake()
+    public override void Spawned()
     {
-        Instance = this;
 
+        Instance = this;
         _players = new List<PlayerRef>();
     }
 

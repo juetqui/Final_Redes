@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 7382206016626763207}
   - component: {fileID: 2916475476036172847}
   - component: {fileID: -2954481880545539307}
-  - component: {fileID: 8303971577262078717}
   m_Layer: 3
   m_Name: Player
   m_TagString: Untagged
@@ -58,7 +57,6 @@ MonoBehaviour:
   NetworkedBehaviours:
   - {fileID: 7382206016626763207}
   - {fileID: -2954481880545539307}
-  - {fileID: 8303971577262078717}
   - {fileID: 5638845533034561776}
   - {fileID: 4993677172435897406}
 --- !u!65 &6566350010309035411
@@ -109,7 +107,7 @@ MonoBehaviour:
   _dashForce: 25
   _dashDuration: 0.3
   _dashCooldownTime: 1
-  _healthBarPrefab: {fileID: 0}
+  _healthBarPrefab: {fileID: 5352407906840429010, guid: 4aa1f75a3c8f95a4a81b00f76dbd36ad, type: 3}
   _healthBarPosition: {x: 10, y: 5, z: 0}
 --- !u!54 &2916475476036172847
 Rigidbody:
@@ -160,18 +158,6 @@ MonoBehaviour:
     Position: 0.01
     Rotation: 0.01
     Scale: 0.01
---- !u!114 &8303971577262078717
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8648752541707377605}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 89bef6edfeb43be4999a9cab9f587442, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &8756168030485605253
 GameObject:
   m_ObjectHideFlags: 0

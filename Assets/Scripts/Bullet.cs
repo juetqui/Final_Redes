@@ -35,9 +35,9 @@ public class Bullet : NetworkBehaviour
         if (!HasStateAuthority) return;
 
 
-        if (other.TryGetComponent(out LifeHandler lifeHandler))
+        if (other.TryGetComponent(out Player player))
         {
-            lifeHandler.TakeDamage(20);
+            player.RPC_TakeDamage((byte)20);
         }
         
 

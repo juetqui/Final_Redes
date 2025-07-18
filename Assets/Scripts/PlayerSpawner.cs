@@ -4,6 +4,7 @@ using System.Linq;
 
 public class PlayerSpawner : SimulationBehaviour, IPlayerJoined
 {
+    [SerializeField] private GameObject _gameManagerPrefab;
     [SerializeField] private GameObject _playerPrefab;
     [SerializeField] private Transform[] _spawnTransforms;
 
@@ -17,6 +18,11 @@ public class PlayerSpawner : SimulationBehaviour, IPlayerJoined
 
     public void PlayerJoined(PlayerRef player)
     {
+        if (player == Runner.LocalPlayer && GameManager.Instance == null)
+        {
+            Runner.Spawn(_gameManagerPrefab, Vector3.zero, Quaternion.identity);
+        }
+
         var playersCount = Runner.ActivePlayers.Count();
 
         if (_initialized && playersCount >= 2)
