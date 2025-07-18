@@ -201,7 +201,10 @@ MonoBehaviour:
   playersConnectedText: {fileID: 2000892288}
   gameScene:
     RawValue: 3
-  runnerPrefab: {fileID: 425241782}
+  lobbyScene:
+    RawValue: 2
+  mainMenuScene:
+    RawValue: 1
 --- !u!224 &506000919
 RectTransform:
   m_ObjectHideFlags: 0
@@ -817,9 +820,9 @@ CanvasRenderer:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 1818168009}
-  - {fileID: 1513052363}
-  - {fileID: 425241783}
-  - {fileID: 630644551}
   - {fileID: 1129436329}
+  - {fileID: 1513052363}
+  - {fileID: 1818168009}
+  - {fileID: 630644551}
+  - {fileID: 425241783}
   - {fileID: 506000919}

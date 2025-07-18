@@ -5,6 +5,7 @@ public class MenuManager : NetworkBehaviour
 {
     [SerializeField] private NetworkRunner runnerPrefab;
     [SerializeField] private SceneRef lobbyScene; // Asignar desde el Inspector
+    [SerializeField] private SceneRef menuScene; // Asignar desde el Inspector
 
     private NetworkRunner _runner;
 
@@ -39,6 +40,7 @@ public class MenuManager : NetworkBehaviour
         if (result.Ok)
         {
             await _runner.SceneManager.LoadScene(lobbyScene, new NetworkLoadSceneParameters());
+            await _runner.SceneManager.UnloadScene(menuScene);
         }
         else
         {

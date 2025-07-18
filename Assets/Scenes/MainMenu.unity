@@ -509,6 +509,8 @@ MonoBehaviour:
   runnerPrefab: {fileID: 1329765999}
   lobbyScene:
     RawValue: 2
+  menuScene:
+    RawValue: 1
 --- !u!114 &724848698
 MonoBehaviour:
   m_ObjectHideFlags: 0
