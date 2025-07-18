@@ -9,12 +9,15 @@ public class Player : NetworkBehaviour
     [SerializeField] private float _speed;
     [SerializeField] private int _maxLife;
     [SerializeField] private float _shootRate = 1f;
+    [SerializeField] private float _secShootRate = 2f;
 
     // --- DISPARO ---
     [SerializeField] private Bullet _bulletPrefab;
+    [SerializeField] private Bullet _secBulletPrefab;
     [SerializeField] private Transform _bulletSpawnerTransform;
     [SerializeField] private LayerMask _shotLayers;
     [Networked] private TickTimer _shootCooldown { get; set; }
+    [Networked] private TickTimer _secShootCooldown { get; set; }
     private bool _isShootPressed;
 
     // --- TRAMPAS ---
@@ -32,6 +35,7 @@ public class Player : NetworkBehaviour
     [SerializeField] private float _dashCooldownTime = 2f;
     [Networked] private TickTimer _dashCooldown { get; set; }
     [Networked] private TickTimer _dashTimer { get; set; }
+    private bool _isTrapPressed;
     private bool _isDashPressed;
     private Vector3 _lastMoveDirection = Vector3.zero;
 
@@ -91,7 +95,8 @@ public class Player : NetworkBehaviour
 
         _isShootPressed = Input.GetMouseButton(0);
         _isSecondaryShotPressed = Input.GetMouseButtonDown(1);
-        _isDashPressed = Input.GetKeyDown(KeyCode.Space);
+        _isTrapPressed = Input.GetKeyDown(KeyCode.Space);
+        _isDashPressed = Input.GetKeyDown(KeyCode.LeftShift);
 
         LookAtMouse();
     }
@@ -105,11 +110,17 @@ public class Player : NetworkBehaviour
             SpawnShot();
             _shootCooldown = TickTimer.CreateFromSeconds(Runner, _shootRate);
         }
+        
+        if (_isSecondaryShotPressed && _secShootCooldown.ExpiredOrNotRunning(Runner))
+        {
+            SpawnSecShot();
+            _secShootCooldown = TickTimer.CreateFromSeconds(Runner, _secShootRate);
+        }
 
-        if (_isSecondaryShotPressed)
+        if (_isTrapPressed)
         {
             SpawnTrap();
-            _isSecondaryShotPressed = false;
+            _isTrapPressed = false;
         }
 
         if (_isDashPressed &&
@@ -177,6 +188,20 @@ public class Player : NetworkBehaviour
         Runner.Spawn(_bulletPrefab, _bulletSpawnerTransform.position, transform.rotation);
         OnShot();
     }
+    
+    private void SpawnSecShot()
+    {
+        if (!HasStateAuthority) return;
+
+        if (_secBulletPrefab == null || _bulletSpawnerTransform == null)
+        {
+            Debug.LogError("Bullet prefab o spawner transform no asignados.", this);
+            return;
+        }
+
+        Runner.Spawn(_secBulletPrefab, _bulletSpawnerTransform.position, transform.rotation);
+        OnShot();
+    }
 
     private void SpawnTrap()
     {
@@ -196,7 +221,7 @@ public class Player : NetworkBehaviour
                 direction = direction.normalized * _maxTrapDistance;
 
             Vector3 spawnPosition = transform.position + direction;
-            spawnPosition.y = 0;
+            spawnPosition.y = 1f;
 
             Runner.Spawn(_trapPrefab, spawnPosition, Quaternion.identity);
             _trapCooldown = TickTimer.CreateFromSeconds(Runner, _trapCooldownSeconds);

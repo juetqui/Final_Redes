@@ -95,7 +95,9 @@ MonoBehaviour:
   _speed: 10
   _maxLife: 100
   _shootRate: 0.5
+  _secShootRate: 2
   _bulletPrefab: {fileID: 2627231479966202028, guid: aaa4118141b8ecd44af8b7c2a23f3a1c, type: 3}
+  _secBulletPrefab: {fileID: 2627231479966202028, guid: ee419d22294de9a4ebda02e0f57fd8a4, type: 3}
   _bulletSpawnerTransform: {fileID: 70639805910098222}
   _shotLayers:
     serializedVersion: 2
