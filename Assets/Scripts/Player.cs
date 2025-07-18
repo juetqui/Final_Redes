@@ -61,34 +61,41 @@ public class Player : NetworkBehaviour
 
         if (HasStateAuthority)
         {
-            _mainCam.GetComponent<FollowTarget>().SetTarget(this);
-            GetComponentInChildren<SkinnedMeshRenderer>().material.color = Color.blue;
+            if (_mainCam != null)
+                _mainCam.GetComponent<FollowTarget>()?.SetTarget(this);
 
-            if (!TryGetBehaviour(out LifeHandler lifeHandler)) return;
+            var smr = GetComponentInChildren<SkinnedMeshRenderer>();
+            if (smr != null)
+                smr.material.color = Color.blue;
 
-            lifeHandler.OnDeadChanged += b =>
+            if (TryGetBehaviour(out LifeHandler lifeHandler))
             {
-                enabled = !b;
-            };
+                lifeHandler.OnDeadChanged += b =>
+                {
+                    enabled = !b;
+                };
 
-            lifeHandler.OnRespawn += () =>
+                lifeHandler.OnRespawn += () =>
+                {
+                    // Quizás querés mover al jugador, no al lifeHandler?
+                    this.transform.position = _healthBarPosition;
+                };
+            }
+            else
             {
-                //transform.position = _healthBarPosition; //VER QUE ONDA
-                lifeHandler.transform.position = _healthBarPosition; //VER QUE ONDA
-            };
-
-            // Instanciamos la barra de vida
-            //_healthBarInstance = Instantiate(_healthBarPrefab);
-            //_healthBarInstance.Initialize(transform, new Vector3(0, 2.2f, 0));
-            //_healthBarInstance.SetHealth(CurrentLife, _maxLife);
+                Debug.LogWarning("LifeHandler no encontrado en Player");
+            }
         }
         else
         {
-            GetComponentInChildren<SkinnedMeshRenderer>().material.color = Color.red;
+            var smr = GetComponentInChildren<SkinnedMeshRenderer>();
+            if (smr != null)
+                smr.material.color = Color.red;
         }
 
-        GameManager.Instance.AddToList(this);
+        GameManager.Instance?.AddToList(this);
     }
+
 
     void Update()
     {
