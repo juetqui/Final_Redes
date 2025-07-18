@@ -13,7 +13,15 @@ public class PlayerSpawner : SimulationBehaviour, IPlayerJoined
     private void Start()
     {
         if (Runner != null)
+        {
             Runner.AddCallbacks((INetworkRunnerCallbacks)this);
+
+            // Forzar el spawn de jugadores ya conectados
+            foreach (var player in Runner.ActivePlayers)
+            {
+                PlayerJoined(player);
+            }
+        }
     }
 
     public void PlayerJoined(PlayerRef player)
