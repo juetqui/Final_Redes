@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1504627789294954873}
-  - component: {fileID: 1227687444757625776}
   - component: {fileID: 5214025031276972457}
   - component: {fileID: 9013446436674521902}
   m_Layer: 0
@@ -36,18 +35,6 @@ Transform:
   - {fileID: 6315629711139952110}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1227687444757625776
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1298512913749146978}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1199893898, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &5214025031276972457
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -60,9 +47,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20031721df168b943ad19ccc27e91590, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerPrefab: {fileID: 8648752541707377605, guid: 127e2e009bcc0964885b8ea89dcd642f, type: 3}
   _gameManagerPrefab: {fileID: 508965250043800926, guid: 9a80ce137eb3b2c4fa1f01da3210da19, type: 3}
-  spawnPoints:
+  _playerPrefab: {fileID: 8648752541707377605, guid: 127e2e009bcc0964885b8ea89dcd642f, type: 3}
+  _spawnTransforms:
   - {fileID: 1614004917491713954}
   - {fileID: 6315629711139952110}
 --- !u!114 &9013446436674521902
@@ -79,7 +66,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SortKey: 527852930
   ObjectInterest: 1
-  Flags: 1
+  Flags: 262145
   NestedObjects: []
   NetworkedBehaviours: []
 --- !u!1 &2263150667145407810
