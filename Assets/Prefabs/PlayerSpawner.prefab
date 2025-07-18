@@ -61,6 +61,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 8648752541707377605, guid: 127e2e009bcc0964885b8ea89dcd642f, type: 3}
+  _gameManagerPrefab: {fileID: 508965250043800926, guid: 9a80ce137eb3b2c4fa1f01da3210da19, type: 3}
   spawnPoints:
   - {fileID: 1614004917491713954}
   - {fileID: 6315629711139952110}
