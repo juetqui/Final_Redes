@@ -4,12 +4,10 @@ using System.Linq;
 using TMPro;
 using UnityEngine;
 
-public class LobbyManager : NetworkBehaviour
+public class LobbyUI : NetworkBehaviour
 {
     [SerializeField] private TextMeshProUGUI playersConnectedText;
-    [SerializeField] private SceneRef gameScene;       // Escena de juego a cargar
-    [SerializeField] private SceneRef lobbyScene;      // Escena del lobby (actual)
-
+    [SerializeField] private SceneRef gameScene;
     private NetworkRunner _Lobbyrunner;
 
     private void Start()
@@ -22,28 +20,25 @@ public class LobbyManager : NetworkBehaviour
         UpdateConnectedPlayersText();
     }
 
-    private void UpdateConnectedPlayersText()
+    private async void UpdateConnectedPlayersText()
     {
         if (_Lobbyrunner != null && playersConnectedText != null)
         {
             int playerCount = _Lobbyrunner.ActivePlayers.Count();
             playersConnectedText.text = $"Jugadores conectados: {playerCount}/2";
+            Debug.Log("entre");
             if (playerCount >= 2)
             {
-                StartGame(_Lobbyrunner);
+                Debug.Log("igual o mas de dos");
+                await NetworkGameManager.Instance.LoadSceneAsync(gameScene);
             }
         }
-    }
-
-    async void StartGame(NetworkRunner _Lobbyrunner)
-    {
-        await _Lobbyrunner.SceneManager.LoadScene(gameScene, new NetworkLoadSceneParameters());
-        await _Lobbyrunner.SceneManager.UnloadScene(lobbyScene);
     }
 
     // Callbacks para actualizar texto cuando jugadores entran o salen
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
+        Debug.Log($"Jugador {player} se ha unido.");
         UpdateConnectedPlayersText();
     }
 
@@ -51,5 +46,4 @@ public class LobbyManager : NetworkBehaviour
     {
         UpdateConnectedPlayersText();
     }
-
 }
