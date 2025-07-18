@@ -1,5 +1,6 @@
 using UnityEngine;
 using Fusion;
+using System.Linq;
 
 public class PlayerSpawner : SimulationBehaviour, IPlayerJoined
 {
@@ -7,17 +8,23 @@ public class PlayerSpawner : SimulationBehaviour, IPlayerJoined
     [SerializeField] private Transform[] _spawnTransforms;
 
     private bool _initialized;
-    
+
+    private void Start()
+    {
+        if (Runner != null)
+            Runner.AddCallbacks((INetworkRunnerCallbacks)this);
+    }
+
     public void PlayerJoined(PlayerRef player)
     {
-        var playersCount = Runner.SessionInfo.PlayerCount;
-        
+        var playersCount = Runner.ActivePlayers.Count();
+
         if (_initialized && playersCount >= 2)
         {
             CreatePlayer(0);
             return;
         }
-        
+
         if (player == Runner.LocalPlayer)
         {
             if (playersCount < 2)
@@ -34,10 +41,10 @@ public class PlayerSpawner : SimulationBehaviour, IPlayerJoined
     void CreatePlayer(int spawnPointIndex)
     {
         _initialized = false;
-        spawnPointIndex = spawnPointIndex % 2 != 0 ? 0 : 1;
+        spawnPointIndex = spawnPointIndex % _spawnTransforms.Length;
         var newPosition = _spawnTransforms[spawnPointIndex].position;
         var newRotation = _spawnTransforms[spawnPointIndex].rotation;
-        
-        Runner.Spawn(_playerPrefab, newPosition, newRotation);
+
+        Runner.Spawn(_playerPrefab, newPosition, newRotation, Runner.LocalPlayer);
     }
 }
