@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 7382206016626763207}
   - component: {fileID: 2916475476036172847}
   - component: {fileID: -2954481880545539307}
-  - component: {fileID: -1704567111927550170}
+  - component: {fileID: 8303971577262078717}
   m_Layer: 3
   m_Name: Player
   m_TagString: Untagged
@@ -58,8 +58,10 @@ MonoBehaviour:
   NetworkedBehaviours:
   - {fileID: 7382206016626763207}
   - {fileID: -2954481880545539307}
-  - {fileID: -1704567111927550170}
+  - {fileID: 8303971577262078717}
   - {fileID: 5638845533034561776}
+  - {fileID: 2467797807571545349}
+  - {fileID: 4993677172435897406}
 --- !u!65 &6566350010309035411
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -96,18 +98,20 @@ MonoBehaviour:
   _speed: 10
   _maxLife: 100
   _shootRate: 0.5
+  _bulletPrefab: {fileID: 2627231479966202028, guid: aaa4118141b8ecd44af8b7c2a23f3a1c, type: 3}
+  _bulletSpawnerTransform: {fileID: 70639805910098222}
   _shotLayers:
     serializedVersion: 2
     m_Bits: 8
-  _bulletPrefab: {fileID: 2627231479966202028, guid: aaa4118141b8ecd44af8b7c2a23f3a1c, type: 3}
-  _bulletSpawnerTransform: {fileID: 70639805910098222}
-  _dashForce: 25
-  _dashDuration: 0.3
-  _dashCooldownTime: 1
-  _maxTrapDistance: 10
   _trapPrefab: {fileID: 5127082543176817627, guid: a899671b05b679644b93247b1e25969f, type: 3}
   _maxTraps: 2
   _trapCooldownSeconds: 3
+  _maxTrapDistance: 10
+  _dashForce: 25
+  _dashDuration: 0.3
+  _dashCooldownTime: 1
+  _healthBarPrefab: {fileID: 0}
+  _healthBarPosition: {x: 10, y: 5, z: 0}
 --- !u!54 &2916475476036172847
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -157,7 +161,7 @@ MonoBehaviour:
     Position: 0.01
     Rotation: 0.01
     Scale: 0.01
---- !u!114 &-1704567111927550170
+--- !u!114 &8303971577262078717
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -166,7 +170,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8648752541707377605}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 787d451bdf8d69c4abc00afdbc62dcf5, type: 3}
+  m_Script: {fileID: 11500000, guid: 89bef6edfeb43be4999a9cab9f587442, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &8756168030485605253
@@ -253,7 +257,8 @@ PrefabInstance:
       value: Erika Archer With Bow Arrow@Standing Aim Idle 01
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 4936884950917866777, guid: cb03d3f2f40add64f948e3971294fd54, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: cb03d3f2f40add64f948e3971294fd54, type: 3}
@@ -262,6 +267,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: cb03d3f2f40add64f948e3971294fd54, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5638845533034561776}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: cb03d3f2f40add64f948e3971294fd54, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2467797807571545349}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: cb03d3f2f40add64f948e3971294fd54, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4993677172435897406}
   m_SourcePrefab: {fileID: 100100000, guid: cb03d3f2f40add64f948e3971294fd54, type: 3}
 --- !u!4 &4629231221435700814 stripped
 Transform:
@@ -307,8 +318,50 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Animator: {fileID: 8035340738299531936}
-  TotalWords: 2
+  TotalWords: 3
   ApplyTiming: 2
   SyncSettings: 79
   StateHashes: 000000008a18fce4b9abd9d3
   TriggerHashes: 00000000
+--- !u!114 &2467797807571545349
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5437399358517726452}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0305cbf87714b404da4ac99551662a66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _speed: 0
+  _maxLife: 0
+  _shootRate: 1
+  _bulletPrefab: {fileID: 0}
+  _bulletSpawnerTransform: {fileID: 0}
+  _shotLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  _trapPrefab: {fileID: 0}
+  _maxTraps: 2
+  _trapCooldownSeconds: 3
+  _maxTrapDistance: 5
+  _dashForce: 15
+  _dashDuration: 0.2
+  _dashCooldownTime: 2
+  _healthBarPrefab: {fileID: 0}
+  _healthBarPosition: {x: 0, y: 0, z: 0}
+--- !u!114 &4993677172435897406
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5437399358517726452}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 787d451bdf8d69c4abc00afdbc62dcf5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _playerVisual: {fileID: 5437399358517726452}

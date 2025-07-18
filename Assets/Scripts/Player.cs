@@ -5,51 +5,53 @@ using UnityEngine;
 
 public class Player : NetworkBehaviour
 {
-    [SerializeField] float _speed;
-    [SerializeField] int _maxLife;
-    [SerializeField] float _shootRate;
+    // --- CONFIGURACIÓN GENERAL ---
+    [SerializeField] private float _speed;
+    [SerializeField] private int _maxLife;
+    [SerializeField] private float _shootRate = 1f;
 
-    [Networked, OnChangedRender(nameof(CurrentLifeChanged))]
-    private int CurrentLife { get; set; }
-    [Networked] private TickTimer _shootCooldown { get; set; }
-
-
-    void CurrentLifeChanged() => Debug.Log(CurrentLife);
-
-    [SerializeField] private LayerMask _shotLayers;
+    // --- DISPARO ---
     [SerializeField] private Bullet _bulletPrefab;
     [SerializeField] private Transform _bulletSpawnerTransform;
-
+    [SerializeField] private LayerMask _shotLayers;
+    [Networked] private TickTimer _shootCooldown { get; set; }
     private bool _isShootPressed;
-    private Vector2 _input;
 
-    private NetworkRigidbody3D _rb;
-    public event Action<float> OnMovement = delegate { };
-    public event Action OnShot = delegate { };
+    // --- TRAMPAS ---
+    [SerializeField] private NetworkObject _trapPrefab;
+    [SerializeField] private int _maxTraps = 2;
+    [SerializeField] private float _trapCooldownSeconds = 3f;
+    [SerializeField] private float _maxTrapDistance = 5f;
+    [Networked] private TickTimer _trapCooldown { get; set; }
+    [Networked] private TickTimer _trapTimer { get; set; }
+    private bool _isSecondaryShotPressed;
 
+    // --- DASH ---
     [SerializeField] private float _dashForce = 15f;
     [SerializeField] private float _dashDuration = 0.2f;
     [SerializeField] private float _dashCooldownTime = 2f;
-    [SerializeField] private float _maxTrapDistance = 5f;
-
-    private bool _isDashPressed;
-
-    [Networked] private TickTimer _dashTimer { get; set; }
     [Networked] private TickTimer _dashCooldown { get; set; }
-
+    [Networked] private TickTimer _dashTimer { get; set; }
+    private bool _isDashPressed;
     private Vector3 _lastMoveDirection = Vector3.zero;
 
-    [SerializeField] private NetworkObject _trapPrefab;
-    private bool _isSecondaryShotPressed;
+    // --- VIDA ---
+    [Networked, OnChangedRender(nameof(CurrentLifeChanged))]
+    private int CurrentLife { get; set; }
+    [SerializeField] private HealthBar _healthBarPrefab;
+    [SerializeField] private Vector3 _healthBarPosition;
+    private HealthBar _healthBarInstance;
 
-    [Networked] private TickTimer _trapTimer { get; set; }
-    [Networked] private TickTimer _trapCooldown { get; set; }
+    // --- INPUT Y REFERENCIAS ---
+    private Vector2 _input;
+    private Camera _mainCam;
+    private NetworkRigidbody3D _rb;
 
-    [SerializeField] private int _maxTraps = 2;
-    [SerializeField] private float _trapCooldownSeconds = 3f;
+    // --- EVENTOS ---
+    public event Action<Vector2> OnMovement = delegate { };
+    public event Action OnShot = delegate { };
 
-    private Camera _mainCam; 
-
+    // --- CICLO DE VIDA ---
     public override void Spawned()
     {
         _rb = GetComponent<NetworkRigidbody3D>();
@@ -61,6 +63,24 @@ public class Player : NetworkBehaviour
         {
             _mainCam.GetComponent<FollowTarget>().SetTarget(this);
             GetComponentInChildren<SkinnedMeshRenderer>().material.color = Color.blue;
+
+            if (!TryGetBehaviour(out LifeHandler lifeHandler)) return;
+
+            lifeHandler.OnDeadChanged += b =>
+            {
+                enabled = !b;
+            };
+
+            lifeHandler.OnRespawn += () =>
+            {
+                //transform.position = _healthBarPosition; //VER QUE ONDA
+                lifeHandler.transform.position = _healthBarPosition; //VER QUE ONDA
+            };
+
+            // Instanciamos la barra de vida
+            //_healthBarInstance = Instantiate(_healthBarPrefab);
+            //_healthBarInstance.Initialize(transform, new Vector3(0, 2.2f, 0));
+            //_healthBarInstance.SetHealth(CurrentLife, _maxLife);
         }
         else
         {
@@ -76,20 +96,9 @@ public class Player : NetworkBehaviour
 
         _input = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
 
-        if (Input.GetMouseButtonDown(0))
-        {
-            _isShootPressed = true;
-        }
-
-        if (Input.GetMouseButtonDown(1)) // botón derecho
-        {
-            _isSecondaryShotPressed = true;
-        }
-
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            _isDashPressed = true;
-        }
+        _isShootPressed = Input.GetMouseButton(0);
+        _isSecondaryShotPressed = Input.GetMouseButtonDown(1);
+        _isDashPressed = Input.GetKeyDown(KeyCode.Space);
 
         LookAtMouse();
     }
@@ -101,7 +110,7 @@ public class Player : NetworkBehaviour
         if (_isShootPressed && _shootCooldown.ExpiredOrNotRunning(Runner))
         {
             SpawnShot();
-            _shootCooldown = TickTimer.CreateFromSeconds(Runner, 2f);
+            _shootCooldown = TickTimer.CreateFromSeconds(Runner, _shootRate);
         }
 
         if (_isSecondaryShotPressed)
@@ -118,11 +127,11 @@ public class Player : NetworkBehaviour
             StartDash();
         }
 
-        _isShootPressed = false;
         _isDashPressed = false;
     }
 
-    void Move(Vector2 input)
+    // --- MOVIMIENTO Y CÁMARA ---
+    private void Move(Vector2 input)
     {
         if (!_trapTimer.ExpiredOrNotRunning(Runner))
         {
@@ -132,33 +141,39 @@ public class Player : NetworkBehaviour
 
         if (!_dashTimer.ExpiredOrNotRunning(Runner))
         {
-            // Si estamos dashing, no modificar la velocidad
-            return;
+            return; // No moverse durante el dash
         }
 
         Vector3 moveDir = new Vector3(input.x, 0, input.y).normalized;
         _lastMoveDirection = moveDir;
 
         _rb.Rigidbody.velocity = moveDir * _speed;
-        OnMovement(moveDir.magnitude);
+        OnMovement(new Vector2(moveDir.x, moveDir.z));
     }
 
-
-    void LookAtMouse()
+    private void LookAtMouse()
     {
         Ray ray = _mainCam.ScreenPointToRay(Input.mousePosition);
 
-        if (Physics.Raycast(ray, out RaycastHit hit, 100f, ~0))
+        if (Physics.Raycast(ray, out RaycastHit hit, 100f))
         {
             Vector3 lookPoint = hit.point;
-            lookPoint.y = transform.position.y; // Mantener altura constante
+            lookPoint.y = transform.position.y;
             transform.LookAt(lookPoint);
         }
     }
 
-    void SpawnShot()
+    private void StartDash()
     {
-        if (!HasStateAuthority) return; // 
+        _rb.Rigidbody.velocity = _lastMoveDirection.normalized * _dashForce;
+        _dashTimer = TickTimer.CreateFromSeconds(Runner, _dashDuration);
+        _dashCooldown = TickTimer.CreateFromSeconds(Runner, _dashCooldownTime);
+    }
+
+    // --- ACCIONES (DISPARO, TRAMPA) ---
+    private void SpawnShot()
+    {
+        if (!HasStateAuthority) return;
 
         if (_bulletPrefab == null || _bulletSpawnerTransform == null)
         {
@@ -170,7 +185,7 @@ public class Player : NetworkBehaviour
         OnShot();
     }
 
-    void SpawnTrap()
+    private void SpawnTrap()
     {
         if (!HasStateAuthority || _trapPrefab == null) return;
         if (!_trapCooldown.ExpiredOrNotRunning(Runner)) return;
@@ -184,42 +199,25 @@ public class Player : NetworkBehaviour
             direction.y = 0;
 
             float distance = direction.magnitude;
-
             if (distance > _maxTrapDistance)
-            {
                 direction = direction.normalized * _maxTrapDistance;
-            }
 
             Vector3 spawnPosition = transform.position + direction;
             spawnPosition.y = 0;
 
             Runner.Spawn(_trapPrefab, spawnPosition, Quaternion.identity);
-
             _trapCooldown = TickTimer.CreateFromSeconds(Runner, _trapCooldownSeconds);
         }
     }
 
-    void StartDash()
-    {
-        _rb.Rigidbody.velocity = _lastMoveDirection.normalized * _dashForce;
-        _dashTimer = TickTimer.CreateFromSeconds(Runner, _dashDuration);
-        _dashCooldown = TickTimer.CreateFromSeconds(Runner, _dashCooldownTime);
-    }
-
-
+    // --- DAÑO Y VIDA ---
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     public void RPC_TakeDamage(int dmg)
     {
         Local_TakeDamage(dmg);
     }
 
-    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-    public void RPC_ApplyTrap(float duration)
-    {
-        _trapTimer = TickTimer.CreateFromSeconds(Runner, duration);
-    }
-
-    void Local_TakeDamage(int dmg)
+    private void Local_TakeDamage(int dmg)
     {
         CurrentLife -= dmg;
 
@@ -229,10 +227,25 @@ public class Player : NetworkBehaviour
         }
     }
 
-    void Death()
+    private void Death()
     {
         Debug.Log("Mori :(");
         GameManager.Instance.RPC_Defeat(Runner.LocalPlayer);
         Runner.Despawn(Object);
+    }
+
+    void CurrentLifeChanged()
+    {
+        Debug.Log(CurrentLife);
+
+        //if (_healthBarInstance != null)
+        //    _healthBarInstance.SetHealth(CurrentLife, _maxLife);
+    }
+
+    // --- EFECTOS EXTERNOS ---
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    public void RPC_ApplyTrap(float duration)
+    {
+        _trapTimer = TickTimer.CreateFromSeconds(Runner, duration);
     }
 }

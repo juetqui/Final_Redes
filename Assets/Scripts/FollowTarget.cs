@@ -5,7 +5,7 @@ public class FollowTarget : MonoBehaviour
     private Transform _targetTransform;
 
     [SerializeField] private float _height = 20f;
-    [SerializeField] private float _smoothSpeed = 10f;
+    [SerializeField] private float _smoothSpeed = 15f;
     [SerializeField] private Vector3 _offset = Vector3.zero;
 
     public void SetTarget(Player player)
