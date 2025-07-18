@@ -1,56 +1,56 @@
-using UnityEngine;
-using Fusion;
-using System.Linq;
+//using UnityEngine;
+//using Fusion;
+//using System.Linq;
 
-public class PlayerSpawner : SimulationBehaviour, IPlayerJoined
-{
-    [SerializeField] private GameObject _gameManagerPrefab;
-    [SerializeField] private GameObject _playerPrefab;
-    [SerializeField] private Transform[] _spawnTransforms;
+//public class PlayerSpawner : SimulationBehaviour, IPlayerJoined
+//{
+//    [SerializeField] private GameObject _gameManagerPrefab;
+//    [SerializeField] private GameObject _playerPrefab;
+//    [SerializeField] private Transform[] _spawnTransforms;
 
-    private bool _initialized;
+//    private bool _initialized;
 
-    private void Start()
-    {
-        if (Runner != null)
-            Runner.AddCallbacks((INetworkRunnerCallbacks)this);
-    }
+//    private void Start()
+//    {
+//        if (Runner != null)
+//            Runner.AddCallbacks((INetworkRunnerCallbacks)this);
+//    }
 
-    public void PlayerJoined(PlayerRef player)
-    {
-        if (player == Runner.LocalPlayer && GameManager.Instance == null)
-        {
-            Runner.Spawn(_gameManagerPrefab, Vector3.zero, Quaternion.identity);
-        }
+//    public void PlayerJoined(PlayerRef player)
+//    {
+//        if (player == Runner.LocalPlayer && GameManager.Instance == null)
+//        {
+//            Runner.Spawn(_gameManagerPrefab, Vector3.zero, Quaternion.identity);
+//        }
 
-        var playersCount = Runner.ActivePlayers.Count();
+//        var playersCount = Runner.ActivePlayers.Count();
 
-        if (_initialized && playersCount >= 2)
-        {
-            CreatePlayer(0);
-            return;
-        }
+//        if (_initialized && playersCount >= 2)
+//        {
+//            CreatePlayer(0);
+//            return;
+//        }
 
-        if (player == Runner.LocalPlayer)
-        {
-            if (playersCount < 2)
-            {
-                _initialized = true;
-            }
-            else
-            {
-                CreatePlayer(playersCount - 1);
-            }
-        }
-    }
+//        if (player == Runner.LocalPlayer)
+//        {
+//            if (playersCount < 2)
+//            {
+//                _initialized = true;
+//            }
+//            else
+//            {
+//                CreatePlayer(playersCount - 1);
+//            }
+//        }
+//    }
 
-    void CreatePlayer(int spawnPointIndex)
-    {
-        _initialized = false;
-        spawnPointIndex = spawnPointIndex % _spawnTransforms.Length;
-        var newPosition = _spawnTransforms[spawnPointIndex].position;
-        var newRotation = _spawnTransforms[spawnPointIndex].rotation;
+//    void CreatePlayer(int spawnPointIndex)
+//    {
+//        _initialized = false;
+//        spawnPointIndex = spawnPointIndex % _spawnTransforms.Length;
+//        var newPosition = _spawnTransforms[spawnPointIndex].position;
+//        var newRotation = _spawnTransforms[spawnPointIndex].rotation;
 
-        Runner.Spawn(_playerPrefab, newPosition, newRotation, Runner.LocalPlayer);
-    }
-}
+//        Runner.Spawn(_playerPrefab, newPosition, newRotation, Runner.LocalPlayer);
+//    }
+//}

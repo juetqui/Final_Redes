@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< Updated upstream:Assets/Scripts/Managers/NetworkGameManager.cs.meta
 guid: 1b6de2f2f591f3b40a6b19efbb211c18
+========
+guid: f70436f40953c184dbeb84f837ca3816
+>>>>>>>> Stashed changes:Assets/Scripts/Managers/MenuUI.cs.meta
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2

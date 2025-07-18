@@ -9,6 +9,7 @@ public class PlayerSpawner : SimulationBehaviour, INetworkRunnerCallbacks
 {
     [Header("Settings")]
     [SerializeField] private GameObject playerPrefab;
+    [SerializeField] private GameObject _gameManagerPrefab;
     [SerializeField] private Transform[] spawnPoints;
 
     private NetworkRunner _runner;
@@ -38,6 +39,10 @@ public class PlayerSpawner : SimulationBehaviour, INetworkRunnerCallbacks
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
         Debug.Log($"[PlayerSpawner] Player {player} joined.");
+        if (player == Runner.LocalPlayer && GameManager.Instance == null)
+        {
+            Runner.Spawn(_gameManagerPrefab, Vector3.zero, Quaternion.identity);
+        }
         SpawnIfNeeded(player);
     }
 

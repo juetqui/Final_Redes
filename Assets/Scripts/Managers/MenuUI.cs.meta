@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< Updated upstream:Assets/Scripts/Managers/MenuUI.cs.meta
 guid: f70436f40953c184dbeb84f837ca3816
+========
+guid: a550bdd1a7078bc429744e0f96dc5bd7
+>>>>>>>> Stashed changes:Assets/Scripts/Managers/LobbyUI.cs.meta
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
