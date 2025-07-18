@@ -50,6 +50,7 @@ public class NetworkGameManager : NetworkBehaviour, INetworkRunnerCallbacks
         }
 
         _runner.ProvideInput = true;
+        _runner.AddCallbacks(this);
 
         var sceneManager = _runner.GetComponent<NetworkSceneManagerDefault>();
         if (sceneManager == null)
@@ -71,7 +72,6 @@ public class NetworkGameManager : NetworkBehaviour, INetworkRunnerCallbacks
             Debug.LogError($"Error al iniciar la sesión: {result.ShutdownReason}");
         }
 
-        _runner.AddCallbacks(this);
     }
 
     public async Task LoadSceneAsync(SceneRef targetScene)
@@ -101,19 +101,27 @@ public class NetworkGameManager : NetworkBehaviour, INetworkRunnerCallbacks
                 await _runner.SceneManager.UnloadScene(lobbyScene);
             }
         }
+
+        Debug.Log($"[NGM] LoadSceneAsync terminado. Escena activa: {SceneManager.GetActiveScene().name} (index={SceneManager.GetActiveScene().buildIndex})");
+
     }
     /* --------- Callback de Fusion --------- */
     public void OnSceneLoadDone(NetworkRunner runner)
     {
-        var active = SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex);
-        Debug.Log($"[NGM] OnSceneLoadDone  active={active}  esperado={gameScene}");
+        Scene currentScene = SceneManager.GetSceneByBuildIndex(gameScene.AsIndex);
 
-        if (active == gameScene)
+        if (currentScene.isLoaded)
         {
+            Debug.Log($"[NGM] OnSceneLoadDone: escena {currentScene.name} cargada correctamente.");
             runner.Spawn(PlayerSpawnerPrefab, Vector3.zero, Quaternion.identity);
             Debug.Log("[NGM] PlayerSpawner spawned.");
         }
+        else
+        {
+            Debug.LogWarning($"[NGM] OnSceneLoadDone: escena esperada {gameScene} no está marcada como cargada todavía.");
+        }
     }
+
 
     public void OnInput(NetworkRunner runner, NetworkInput input) { }
     public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) { }
