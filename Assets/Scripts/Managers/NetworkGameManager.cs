@@ -105,10 +105,13 @@ public class NetworkGameManager : NetworkBehaviour, INetworkRunnerCallbacks
     /* --------- Callback de Fusion --------- */
     public void OnSceneLoadDone(NetworkRunner runner)
     {
-        if (runner.CanSpawn)
+        var active = SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex);
+        Debug.Log($"[NGM] OnSceneLoadDone  active={active}  esperado={gameScene}");
+
+        if (active == gameScene)
         {
             runner.Spawn(PlayerSpawnerPrefab, Vector3.zero, Quaternion.identity);
-            Debug.Log("[NetworkGameManager] PlayerSpawner spawned in OnSceneLoadDone.");
+            Debug.Log("[NGM] PlayerSpawner spawned.");
         }
     }
 
