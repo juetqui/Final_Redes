@@ -4,10 +4,11 @@ using UnityEngine;
 using Fusion;
 using Fusion.Sockets;
 using System.Linq;
+using UnityEngine.Splines;
 
 public class Spawner : MonoBehaviour, INetworkRunnerCallbacks
 {
-    [SerializeField] private GameObject _playerPrefab;
+    [SerializeField] private NetworkPrefabRef _playerPrefab;
     [SerializeField] private GameObject _gameManagerPrefab;
     [SerializeField] private Transform[] _spawnTransforms;
 
@@ -17,38 +18,40 @@ public class Spawner : MonoBehaviour, INetworkRunnerCallbacks
     {
         if (player == runner.LocalPlayer && GameManager.Instance == null)
         {
+            Debug.Log("gamemanager instance");
             runner.Spawn(_gameManagerPrefab, Vector3.zero, Quaternion.identity);
         }
+        runner.Spawn(_playerPrefab,null,null, player);
 
-        var playersCount = runner.ActivePlayers.Count();
+        //var playersCount = runner.ActivePlayers.Count();
 
-        if (_initialized && playersCount >= 2)
-        {
-            CreatePlayer(0, runner);
-            return;
-        }
+        //if (_initialized && playersCount >= 2)
+        //{
+        //    CreatePlayer(0, runner, player);
+        //    return;
+        //}
 
-        if (player == runner.LocalPlayer)
-        {
-            if (playersCount < 2)
-            {
-                _initialized = true;
-            }
-            else
-            {
-                CreatePlayer(playersCount - 1, runner);
-            }
-        }
+        //if (player == runner.LocalPlayer)
+        //{
+        //    if (playersCount < 2)
+        //    {
+        //        _initialized = true;
+        //    }
+        //    else
+        //    {
+        //        CreatePlayer(playersCount - 1, runner, player);
+        //    }
+        //}
     }
 
-    void CreatePlayer(int spawnPointIndex, NetworkRunner runner)
+    void CreatePlayer(int spawnPointIndex, NetworkRunner runner, PlayerRef player)
     {
         _initialized = false;
         spawnPointIndex = spawnPointIndex % _spawnTransforms.Length;
         var newPosition = _spawnTransforms[spawnPointIndex].position;
         var newRotation = _spawnTransforms[spawnPointIndex].rotation;
 
-        runner.Spawn(_playerPrefab, newPosition, newRotation, runner.LocalPlayer);
+        runner.Spawn(_playerPrefab, newPosition, newRotation,player);
     }
 
     private LocalInputs _localInputs;

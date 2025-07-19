@@ -46,15 +46,16 @@ public class NetworkRunnerHandler : MonoBehaviour, INetworkRunnerCallbacks
 
     public async void CreateGame(string sessionName, string sceneName)
     {
-        //var sceneManager = _currentRunner.GetComponent<NetworkSceneManagerDefault>();
-        //if (sceneManager == null)
-        //    sceneManager = _currentRunner.gameObject.AddComponent<NetworkSceneManagerDefault>();
+        var sceneManager = _currentRunner.GetComponent<NetworkSceneManagerDefault>();
+        if (sceneManager == null)
+            sceneManager = _currentRunner.gameObject.AddComponent<NetworkSceneManagerDefault>();
 
         var result = await _currentRunner.StartGame(new StartGameArgs
         {
             GameMode = GameMode.Shared,
             Scene = SceneRef.FromIndex(SceneUtility.GetBuildIndexByScenePath($"Scenes/{sceneName}")),
-            SessionName = sessionName
+            SessionName = sessionName,
+            SceneManager = sceneManager
         });
 
         if (!result.Ok)
