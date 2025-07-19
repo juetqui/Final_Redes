@@ -1,5 +1,6 @@
 using Fusion;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MenuUI : NetworkBehaviour
@@ -9,5 +10,10 @@ public class MenuUI : NetworkBehaviour
     {
         NetworkGameManager.Instance.StartSession(isHost: true);
         _PlayBtn.interactable = false;
+    }
+
+    public void OnMenuBTN()
+    {
+        SceneManager.LoadScene("MainMenu");
     }
 }

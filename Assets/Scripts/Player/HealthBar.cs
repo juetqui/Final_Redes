@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -20,25 +19,6 @@ public class HealthBar : MonoBehaviour
     public void UpdateLife(float val, float maxHealth)
     {
         _myLifeImage.fillAmount = val / maxHealth;
-        //val = Mathf.Clamp01(val);
-        //StopAllCoroutines();
-        //StartCoroutine(UpdateLifeOnTime(val));
-    }
-
-    IEnumerator UpdateLifeOnTime(float val)
-    {
-        var ticks = 0f;
-
-        var startAmount = _myLifeImage.fillAmount;
-
-        while (ticks < 1)
-        {
-            ticks += Time.deltaTime * 2;
-
-            _myLifeImage.fillAmount = Mathf.Lerp(startAmount, val, ticks);
-
-            yield return null;
-        }
     }
 
     public void UpdatePosition()

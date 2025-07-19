@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Fusion;
 using UnityEngine;
@@ -11,14 +12,13 @@ public class GameManager : NetworkBehaviour
 
     private List<PlayerRef> _players;
 
-    public bool GameFinished { get; private set; }
+    public Action<bool> OnGameFinished = delegate { };
 
     public override void Spawned()
     {
 
         Instance = this;
         _players = new List<PlayerRef>();
-        GameFinished = false;
     }
 
     public void AddToList(Player player)
@@ -38,8 +38,7 @@ public class GameManager : NetworkBehaviour
     [Rpc]
     public void RPC_Defeat(PlayerRef player)
     {
-
-        GameFinished = true;
+        OnGameFinished?.Invoke(false);
 
         if (player == Runner.LocalPlayer)
         {

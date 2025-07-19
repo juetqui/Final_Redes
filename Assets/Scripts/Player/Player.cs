@@ -37,6 +37,7 @@ public class Player : NetworkBehaviour
     [Networked] private TickTimer _dashTimer { get; set; }
     private bool _isTrapPressed;
     private bool _isDashPressed;
+    private bool _inputsEnabled = true;
     private Vector3 _lastMoveDirection = Vector3.zero;
 
     // --- VIDA ---
@@ -63,6 +64,7 @@ public class Player : NetworkBehaviour
         _mainCam = Camera.main;
 
         CurrentLife = _maxLife;
+        CurrentLifeChanged();
 
         _healthBarInstance = LifeBarHandler.Instance.AddLifeBar(this);
 
@@ -83,12 +85,18 @@ public class Player : NetworkBehaviour
         }
 
         GameManager.Instance?.AddToList(this);
+        GameManager.Instance.OnGameFinished += CheckInputs;
+    }
+
+    private void CheckInputs(bool enabled)
+    {
+        _inputsEnabled = enabled;
     }
 
 
     void Update()
     {
-        if (!HasStateAuthority ||   GameManager.Instance.GameFinished) return;
+        if (!HasStateAuthority || !_inputsEnabled) return;
 
         _input = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
 
