@@ -43,7 +43,8 @@ public class MainMenuHandler : MonoBehaviour
     {
         _networkRunnerHandler.JoinLobby();
         _initialPanel.SetActive(false);
-        
+        _hostGamePanel.SetActive(true);
+
         //PlayerPrefs.SetString("Nickname", _nicknameField.text);
         //_statusPanel.SetActive(true);
         //_statusText.text = "Joining Lobby...";
@@ -52,7 +53,6 @@ public class MainMenuHandler : MonoBehaviour
     //void Btn_ShowHostPanel()
     //{
     //    _sessionBrowserPanel.SetActive(false);
-    //    _hostGamePanel.SetActive(true);
     //}
 
     void Btn_CreateGameSession()
