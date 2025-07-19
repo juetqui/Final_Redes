@@ -3,17 +3,52 @@ using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
 using Fusion.Sockets;
+using System.Linq;
 
 public class Spawner : MonoBehaviour, INetworkRunnerCallbacks
 {
-    [SerializeField] private NetworkPrefabRef _playerPrefab;
+    [SerializeField] private GameObject _playerPrefab;
+    [SerializeField] private GameObject _gameManagerPrefab;
+    [SerializeField] private Transform[] _spawnTransforms;
+
+    private bool _initialized;
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
-        if (runner.IsServer)
+        if (player == runner.LocalPlayer && GameManager.Instance == null)
         {
-            runner.Spawn(_playerPrefab, null, null, player);
+            runner.Spawn(_gameManagerPrefab, Vector3.zero, Quaternion.identity);
         }
+
+        var playersCount = runner.ActivePlayers.Count();
+
+        if (_initialized && playersCount >= 2)
+        {
+            CreatePlayer(0, runner);
+            return;
+        }
+
+        if (player == runner.LocalPlayer)
+        {
+            if (playersCount < 2)
+            {
+                _initialized = true;
+            }
+            else
+            {
+                CreatePlayer(playersCount - 1, runner);
+            }
+        }
+    }
+
+    void CreatePlayer(int spawnPointIndex, NetworkRunner runner)
+    {
+        _initialized = false;
+        spawnPointIndex = spawnPointIndex % _spawnTransforms.Length;
+        var newPosition = _spawnTransforms[spawnPointIndex].position;
+        var newRotation = _spawnTransforms[spawnPointIndex].rotation;
+
+        runner.Spawn(_playerPrefab, newPosition, newRotation, runner.LocalPlayer);
     }
 
     private LocalInputs _localInputs;

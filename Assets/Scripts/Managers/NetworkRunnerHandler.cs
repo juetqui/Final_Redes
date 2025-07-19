@@ -32,20 +32,45 @@ public class NetworkRunnerHandler : MonoBehaviour, INetworkRunnerCallbacks
     {
         var result = await _currentRunner.JoinSessionLobby(SessionLobby.Custom, "Normal lobby");
 
-        if (result.Ok) Debug.Log($"[Custom Msg] Joined Lobby"); 
+        if (result.Ok)
+        {
+            Debug.Log($"[Custom Msg] Joined Lobby");
+            OnJoinedLobby();
+        }
         else Debug.LogError($"[Custom Error] Unable to Join Lobby");
     }
-    
+
     #endregion
 
     #region StartGame
 
-
     public async void CreateGame(string sessionName, string sceneName)
     {
-        await InitializeGame(GameMode.Host, sessionName, SceneUtility.GetBuildIndexByScenePath($"Scenes/{sceneName}"));
+        //var sceneManager = _currentRunner.GetComponent<NetworkSceneManagerDefault>();
+        //if (sceneManager == null)
+        //    sceneManager = _currentRunner.gameObject.AddComponent<NetworkSceneManagerDefault>();
+
+        var result = await _currentRunner.StartGame(new StartGameArgs
+        {
+            GameMode = GameMode.Shared,
+            Scene = SceneRef.FromIndex(SceneUtility.GetBuildIndexByScenePath($"Scenes/{sceneName}")),
+            SessionName = sessionName
+        });
+
+        if (!result.Ok)
+        {
+            Debug.LogError($"[Custom Error] Unable to Start Game");
+        }
+        else
+        {
+            Debug.Log($"[Custom Msg] Game Started");
+        }
     }
-    
+    //public async void CreateGame(string sessionName, string sceneName)
+    //{
+    //    await InitializeGame(GameMode.Host, sessionName, SceneUtility.GetBuildIndexByScenePath($"Scenes/{sceneName}"));
+    //}
+
     public async void JoinGame(SessionInfo sessionInfo)
     {
         await InitializeGame(GameMode.Client, sessionInfo.Name, SceneManager.GetActiveScene().buildIndex);
