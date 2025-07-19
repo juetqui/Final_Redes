@@ -1,13 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class LocalInputs : MonoBehaviour
 {
     private NetworkInputData _networkInputData;
 
-    private bool _isJumpPressed;
     private bool _isFirePressed;
+    private bool _isSecFirePressed;
+    private bool _isTrapPressed;
+    private bool _isDashPressed;
     
     void Start()
     {
@@ -16,25 +16,28 @@ public class LocalInputs : MonoBehaviour
 
     void Update()
     {
-        _networkInputData.movementInput = Input.GetAxis("Horizontal");
+        _networkInputData.horizontalInput = Input.GetAxis("Horizontal");
+        _networkInputData.verticalInput = Input.GetAxis("Vertical");
 
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            _isFirePressed = true;
-        }
-
-        //_isFirePressed |= Input.GetKeyDown(KeyCode.Space);
-        
-        _isJumpPressed |= Input.GetKeyDown(KeyCode.W);
+        _isFirePressed |= Input.GetKeyDown(KeyCode.Mouse0);
+        _isSecFirePressed |= Input.GetKeyDown(KeyCode.Mouse1);
+        _isTrapPressed |= Input.GetKeyDown(KeyCode.Space);
+        _isDashPressed |= Input.GetKeyDown(KeyCode.LeftShift);
     }
 
     public NetworkInputData GetLocalInputs()
     {
         _networkInputData.isFirePressed = _isFirePressed;
         _isFirePressed = false;
+        
+        _networkInputData.isSecFirePressed = _isSecFirePressed;
+        _isSecFirePressed = false;
 
-        _networkInputData.networkButtons.Set(MyButtons.Jump, _isJumpPressed);
-        _isJumpPressed = false;
+        _networkInputData.isTrapPressed = _isTrapPressed;
+        _isTrapPressed = false;
+
+        _networkInputData.networkButtons.Set(MyButtons.Jump, _isDashPressed);
+        _isDashPressed = false;
         
         return _networkInputData;
     }
