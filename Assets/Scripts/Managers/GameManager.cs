@@ -11,11 +11,14 @@ public class GameManager : NetworkBehaviour
 
     private List<PlayerRef> _players;
 
+    public bool GameFinished { get; private set; }
+
     public override void Spawned()
     {
 
         Instance = this;
         _players = new List<PlayerRef>();
+        GameFinished = false;
     }
 
     public void AddToList(Player player)
@@ -35,6 +38,9 @@ public class GameManager : NetworkBehaviour
     [Rpc]
     public void RPC_Defeat(PlayerRef player)
     {
+
+        GameFinished = true;
+
         if (player == Runner.LocalPlayer)
         {
             Defeat();

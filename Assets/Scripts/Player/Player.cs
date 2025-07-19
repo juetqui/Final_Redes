@@ -51,7 +51,6 @@ public class Player : NetworkBehaviour
     private Vector2 _input;
     private Camera _mainCam;
     private NetworkRigidbody3D _rb;
-    private bool _inputsEnabled = true;
 
     // --- EVENTOS ---
     public event Action<Vector2> OnMovement = delegate { };
@@ -89,7 +88,7 @@ public class Player : NetworkBehaviour
 
     void Update()
     {
-        if (!HasStateAuthority || !_inputsEnabled) return;
+        if (!HasStateAuthority ||   GameManager.Instance.GameFinished) return;
 
         _input = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
 
@@ -257,7 +256,6 @@ public class Player : NetworkBehaviour
         if (gameManager != null)
             gameManager.RPC_Defeat(Object.StateAuthority);
 
-        _inputsEnabled = false;
         Runner.Despawn(Object);
     }
 
