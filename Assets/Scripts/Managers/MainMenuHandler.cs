@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 
 public class MainMenuHandler : MonoBehaviour
 {
@@ -8,8 +9,8 @@ public class MainMenuHandler : MonoBehaviour
 
     [Header("Panels")]
     [SerializeField] private GameObject _initialPanel;
-    [SerializeField] private GameObject _statusPanel;
     [SerializeField] private GameObject _hostGamePanel;
+    [SerializeField] private GameObject[] _playersPannel;
 
     [Header("Buttons")]
     [SerializeField] private Button _joinLobbyBTN;
@@ -17,17 +18,21 @@ public class MainMenuHandler : MonoBehaviour
 
     [Header("Texts")]
     [SerializeField] private TMP_Text _statusText;
-
+    int numberPlaye=0;
     void Start()
     {
         _joinLobbyBTN.onClick.AddListener(Btn_JoinLobby);
         _hostGameBTN.onClick.AddListener(Btn_CreateGameSession);
-
+        _hostGameBTN.enabled = false;
         _networkRunnerHandler.OnJoinedLobby += () =>
         {
             Debug.Log("[Custom Msg] Joined Lobby");
-            _statusPanel.SetActive(false);
+            var playersCount = _networkRunnerHandler._runnerPrefab.ActivePlayers;
             _hostGamePanel.SetActive(true);
+            _statusText.text = "Start Game";
+            _playersPannel[numberPlaye].SetActive(true);
+            _hostGameBTN.enabled = true;
+            numberPlaye++;
         };
     }
 
@@ -36,8 +41,7 @@ public class MainMenuHandler : MonoBehaviour
         _networkRunnerHandler.JoinLobby();
 
         _initialPanel.SetActive(false);
-        _statusPanel.SetActive(true);
-
+        _hostGamePanel.SetActive(true);
         _statusText.text = "Joining Lobby...";
     }
 
