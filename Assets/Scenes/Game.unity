@@ -5422,9 +5422,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1836363546}
   - component: {fileID: 1836363547}
-  - component: {fileID: 1836363550}
   - component: {fileID: 1836363549}
-  - component: {fileID: 1836363548}
+  - component: {fileID: 1836363550}
   - component: {fileID: 1836363551}
   m_Layer: 0
   m_Name: PrototypeRunner
@@ -5460,21 +5459,6 @@ MonoBehaviour:
   m_Script: {fileID: -1199893898, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1836363548
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1836363545}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -49887739, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  BVHDepth: 0
-  BVHNodes: 0
-  TotalHitboxes: 0
 --- !u!114 &1836363549
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5489,7 +5473,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _playerPrefab:
     RawGuidValue: 127e2e009bcc0964885b8ea89dcd642f
-  _gameManagerPrefab: {fileID: 508965250043800926, guid: 9a80ce137eb3b2c4fa1f01da3210da19, type: 3}
+  _gameManagerPrefab:
+    RawGuidValue: 9a80ce137eb3b2c4fa1f01da3210da19
   _spawnTransforms:
   - {fileID: 872775990}
   - {fileID: 1956672504}

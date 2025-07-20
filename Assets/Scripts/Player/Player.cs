@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class Player : NetworkBehaviour
 {
+    #region config
     // --- CONFIGURACIÓN GENERAL ---
     [SerializeField] private float _speed;
     [SerializeField] private int _maxLife;
@@ -57,7 +58,7 @@ public class Player : NetworkBehaviour
     public event Action<Vector2> OnMovement = delegate { };
     public event Action OnShot = delegate { };
 
-    // --- CICLO DE VIDA ---
+    #endregion  
     public override void Spawned()
     {
         _rb = GetComponent<NetworkRigidbody3D>();

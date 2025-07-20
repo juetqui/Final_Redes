@@ -3,59 +3,23 @@ using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
 using Fusion.Sockets;
-using System.Linq;
-using UnityEngine.Splines;
 
 public class Spawner : MonoBehaviour, INetworkRunnerCallbacks
 {
     [SerializeField] private NetworkPrefabRef _playerPrefab;
-    [SerializeField] private GameObject _gameManagerPrefab;
+    [SerializeField] private NetworkPrefabRef _gameManagerPrefab;
     [SerializeField] private Transform[] _spawnTransforms;
 
     private bool _initialized;
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
-        if (player == runner.LocalPlayer && GameManager.Instance == null)
-        {
-            Debug.Log("gamemanager instance");
-            runner.Spawn(_gameManagerPrefab, Vector3.zero, Quaternion.identity);
-        }
         runner.Spawn(_playerPrefab,null,null, player);
-
-        //var playersCount = runner.ActivePlayers.Count();
-
-        //if (_initialized && playersCount >= 2)
-        //{
-        //    CreatePlayer(0, runner, player);
-        //    return;
-        //}
-
-        //if (player == runner.LocalPlayer)
-        //{
-        //    if (playersCount < 2)
-        //    {
-        //        _initialized = true;
-        //    }
-        //    else
-        //    {
-        //        CreatePlayer(playersCount - 1, runner, player);
-        //    }
-        //}
-    }
-
-    void CreatePlayer(int spawnPointIndex, NetworkRunner runner, PlayerRef player)
-    {
-        _initialized = false;
-        spawnPointIndex = spawnPointIndex % _spawnTransforms.Length;
-        var newPosition = _spawnTransforms[spawnPointIndex].position;
-        var newRotation = _spawnTransforms[spawnPointIndex].rotation;
-
-        runner.Spawn(_playerPrefab, newPosition, newRotation,player);
+        runner.Spawn(_gameManagerPrefab, Vector3.zero, Quaternion.identity);
     }
 
     private LocalInputs _localInputs;
-    
+
     public void OnInput(NetworkRunner runner, NetworkInput input)
     {
         if (!NetworkPlayer.Local) return;
@@ -69,8 +33,7 @@ public class Spawner : MonoBehaviour, INetworkRunnerCallbacks
     {
         runner.Shutdown();
     }
-    
-    
+
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player) { }
     public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) { }
     public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason) { }
