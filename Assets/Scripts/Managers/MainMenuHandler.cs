@@ -27,7 +27,6 @@ public class MainMenuHandler : MonoBehaviour
         _networkRunnerHandler.OnJoinedLobby += () =>
         {
             Debug.Log("[Custom Msg] Joined Lobby");
-            var playersCount = _networkRunnerHandler._runnerPrefab.ActivePlayers;
             _hostGamePanel.SetActive(true);
             _statusText.text = "Start Game";
             _playersPannel[numberPlaye].SetActive(true);
