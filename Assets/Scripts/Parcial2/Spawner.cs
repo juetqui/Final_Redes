@@ -8,14 +8,12 @@ public class Spawner : MonoBehaviour, INetworkRunnerCallbacks
 {
     [SerializeField] private NetworkPrefabRef _playerPrefab;
     [SerializeField] private NetworkPrefabRef _gameManagerPrefab;
-    [SerializeField] private Transform[] _spawnTransforms;
-
-    private bool _initialized;
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
-        runner.Spawn(_playerPrefab,null,null, player);
-        runner.Spawn(_gameManagerPrefab, Vector3.zero, Quaternion.identity);
+        //Debug.Log($"Spawning GameManager: {_gameManagerPrefab}");
+        //runner.Spawn(_gameManagerPrefab, Vector3.zero, Quaternion.identity);
+        runner.Spawn(_playerPrefab,new Vector3(0,0,0),null, player);
     }
 
     private LocalInputs _localInputs;

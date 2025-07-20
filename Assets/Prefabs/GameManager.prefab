@@ -257,7 +257,7 @@ MonoBehaviour:
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 6002871769977387533}
-  - {fileID: 9157059377617015286}
+  - {fileID: 6184410148634145445}
   - {fileID: 2148931010963941561}
 --- !u!114 &6002871769977387533
 MonoBehaviour:
@@ -284,7 +284,7 @@ GameObject:
   - component: {fileID: 7557926888089902650}
   - component: {fileID: 3114582443307312370}
   - component: {fileID: 1101245208018460802}
-  - component: {fileID: 9157059377617015286}
+  - component: {fileID: 6184410148634145445}
   m_Layer: 5
   m_Name: Image - Win
   m_TagString: Untagged
@@ -351,7 +351,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &9157059377617015286
+--- !u!114 &6184410148634145445
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1113,7 +1113,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 9157059377617015286}
+      - m_Target: {fileID: 6184410148634145445}
         m_TargetAssemblyTypeName: MenuUI, Assembly-CSharp
         m_MethodName: OnMenuBTN
         m_Mode: 1

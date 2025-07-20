@@ -16,7 +16,6 @@ public class GameManager : NetworkBehaviour
 
     public override void Spawned()
     {
-
         Instance = this;
         _players = new List<PlayerRef>();
     }

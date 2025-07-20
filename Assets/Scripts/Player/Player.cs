@@ -64,6 +64,11 @@ public class Player : NetworkBehaviour
         _rb = GetComponent<NetworkRigidbody3D>();
         _mainCam = Camera.main;
 
+        if (HasStateAuthority)
+        {
+            Debug.Log("Tengo autoridad para moverme");
+        }
+
         CurrentLife = _maxLife;
         CurrentLifeChanged();
 
@@ -85,8 +90,15 @@ public class Player : NetworkBehaviour
                 smr.material.color = Color.red;
         }
 
-        GameManager.Instance?.AddToList(this);
-        GameManager.Instance.OnGameFinished += CheckInputs;
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.AddToList(this);
+            GameManager.Instance.OnGameFinished += CheckInputs;
+        }
+        else
+        {
+            Debug.LogWarning("GameManager.Instance aún no disponible en Player.Spawned()");
+        }
     }
 
     private void CheckInputs(bool enabled)
@@ -98,49 +110,43 @@ public class Player : NetworkBehaviour
     void Update()
     {
         if (!HasStateAuthority || !_inputsEnabled) return;
-
-        _input = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-
-        _isShootPressed = Input.GetMouseButton(0);
-        _isSecondaryShotPressed = Input.GetMouseButtonDown(1);
-        _isTrapPressed = Input.GetKeyDown(KeyCode.Space);
-        _isDashPressed = Input.GetKeyDown(KeyCode.LeftShift);
-
         LookAtMouse();
     }
 
     public override void FixedUpdateNetwork()
     {
-        Move(_input);
+        if (!GetInput(out NetworkInputData inputData))
+            return;
 
-        if (_isShootPressed && _shootCooldown.ExpiredOrNotRunning(Runner))
+        Vector2 input = new Vector2(inputData.horizontalInput, inputData.verticalInput);
+        Move(input);
+
+        if (inputData.isFirePressed && _shootCooldown.ExpiredOrNotRunning(Runner))
         {
             SpawnShot();
             _shootCooldown = TickTimer.CreateFromSeconds(Runner, _shootRate);
         }
-        
-        if (_isSecondaryShotPressed && _secShootCooldown.ExpiredOrNotRunning(Runner))
+
+        if (inputData.isSecFirePressed && _secShootCooldown.ExpiredOrNotRunning(Runner))
         {
             SpawnSecShot();
             _secShootCooldown = TickTimer.CreateFromSeconds(Runner, _secShootRate);
         }
 
-        if (_isTrapPressed)
+        if (inputData.isTrapPressed)
         {
             SpawnTrap();
-            _isTrapPressed = false;
         }
 
-        if (_isDashPressed &&
+        if (inputData.networkButtons.IsSet(MyButtons.Jump) &&
             _dashCooldown.ExpiredOrNotRunning(Runner) &&
             _trapTimer.ExpiredOrNotRunning(Runner) &&
             _lastMoveDirection.magnitude > 0.1f)
         {
             StartDash();
         }
-
-        _isDashPressed = false;
     }
+
 
     // --- MOVIMIENTO Y CÁMARA ---
     private void Move(Vector2 input)
@@ -155,7 +161,7 @@ public class Player : NetworkBehaviour
         {
             return; // No moverse durante el dash
         }
-
+        Debug.Log("muevo : " + input.ToString());
         Vector3 moveDir = new Vector3(input.x, 0, input.y).normalized;
         _lastMoveDirection = moveDir;
 

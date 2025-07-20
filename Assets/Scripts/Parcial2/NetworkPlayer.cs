@@ -7,16 +7,12 @@ public class NetworkPlayer : NetworkBehaviour
 {
     public static NetworkPlayer Local { get; private set; }
     public LocalInputs LocalInputs { get; private set; }
-
-    private ChangeDetector _changeDetector;
     
     public event Action OnLeft = delegate { };
 
     public override void Spawned()
     {
         LocalInputs = GetComponent<LocalInputs>();
-
-        _changeDetector = GetChangeDetector(ChangeDetector.Source.SimulationState);
         
         if (Object.HasInputAuthority)
         {
